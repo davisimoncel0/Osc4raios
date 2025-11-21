@@ -1,0 +1,283 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Osc4raios</title>
+  <style>
+    :root {
+      --gold: #d4af37;
+      --bg: #fff;
+      --card: #1a1a1a;
+      --text: #f5f5f5;
+    }
+
+    body {
+      margin: 0;
+      font-family: 'Intro Rust', sans-serif;
+      background: var(--bg);
+      color: var(--text);
+    }
+
+    header {
+      text-align: center;
+      padding: 50px 0 20px;
+    }
+
+    header img {
+      height: 85px;
+      margin: 0 20px;
+    }
+
+    .main-container {
+      width: 95%;
+      max-width: 1200px;
+      margin: 40px auto;
+      background: #fff;
+      padding: 40px;
+      border-radius: 20px;
+    }
+
+    /* FORMULÁRIO */
+    .form-box {
+      background: #ffad07;
+      padding: 25px;
+      border-radius: 16px;
+      margin-bottom: 50px;
+      border: 1px solid #ffad07;
+    }
+
+    .form-title {
+      font-size: 20px;
+      margin-bottom: 20px;
+      font-weight: 700;
+      color: #fff;
+      text-align: center;
+    }
+
+    .form-container {
+      display: flex;
+      align-items: center;
+      gap: 15px;
+      background: #0a0a0a;
+      border: 1px solid #333;
+      padding: 15px;
+      border-radius: 12px;
+    }
+
+    /* LINK CLICÁVEL */
+    .form-link {
+      flex: 1;
+      color: #fff;
+      font-size: 16px;
+      word-break: break-all;
+      text-decoration: none;
+    }
+
+    .form-link:hover {
+      text-decoration: underline;
+    }
+
+    .copy-btn {
+      background: #ffad07;
+      color: #000;
+      border: none;
+      width: 45px;
+      height: 45px;
+      cursor: pointer;
+      border-radius: 10px;
+      font-size: 20px;
+      font-weight: bold;
+    }
+
+    /* CATEGORIAS */
+    .categoria {
+      margin-top: 60px;
+    }
+
+    .categoria h2 {
+      color: #ffad07;
+      font-size: 24px;
+      margin-bottom: 20px;
+      font-weight: 700;
+    }
+
+    /* CARROSSEL */
+    .carousel {
+      overflow: hidden;
+      width: 100%;
+    }
+
+    .carousel-track {
+      display: flex;
+      gap: 20px;
+      transition: transform 0.6s ease;
+    }
+
+    .slide {
+      min-width: calc(33.33% - 15px);
+      height: 220px;
+      background: #222;
+      border-radius: 14px;
+      border: 1px solid #333;
+      position: relative;
+      overflow: hidden;
+      box-shadow: 0 5px 20px rgba(0,0,0,0.4);
+    }
+
+    .slide img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+
+    .slide span {
+      position: absolute;
+      bottom: 10px;
+      left: 10px;
+      background: rgba(0,0,0,0.7);
+      padding: 8px 12px;
+      border-radius: 6px;
+      color: #fff;
+      font-weight: 600;
+    }
+
+    footer {
+      margin-top: 80px;
+      padding: 30px 0;
+      text-align: center;
+      color: #fff;
+      border-top: 1px solid #ffad07;
+    }
+
+    footer a {
+      color: var(--gold);
+      text-decoration: none;
+      font-weight: bold;
+    }
+  
+    /* RESPONSIVO */
+    * { box-sizing: border-box; }
+    html, body { overflow-x: hidden; }
+
+    @media (max-width: 768px) {
+      header { padding: 20px 0; }
+      header img { height: 120px !important; }
+
+      .main-container { padding: 20px; width: 100%; }
+
+      .form-container { flex-direction: column; align-items: stretch; }
+      .copy-btn { width: 100%; height: 45px; }
+
+      .slide {
+        min-width: 80% !important;
+        height: 180px;
+      }
+      .carousel-track { gap: 12px; }
+    }
+
+    @media (max-width: 480px) {
+      .slide { min-width: 90% !important; height: 170px; }
+      .categoria h2 { font-size: 20px; }
+      .form-title { font-size: 18px; }
+    }
+
+  </style>
+</head>
+<body>
+
+<header>
+  <img src="logo.png" style="height:200px; display:block; margin:0 auto;" />
+</header>
+
+<div class="main-container">
+
+  <!-- FORMULÁRIO -->
+  <div class="form-box">
+    <div class="form-title">Formulário de Votação</div>
+
+    <div class="form-container">
+      <a class="form-link" id="voteLink" href="https://seulinkdevotacao.com" target="_blank">
+        https://seulinkdevotacao.com
+      </a>
+      <button class="copy-btn" onclick="copyLink()">📋</button>
+    </div>
+  </div>
+
+  <!-- 12 CATEGORIAS GERADAS -->
+  <script>
+    const categorias = [
+      "Melhor Ator",
+      "Melhor Atriz",
+      "Melhor Professor(a)",
+      "Melhor Aluno(a)",
+      "Maior Evolução",
+      "Melhor Trabalho",
+      "Melhor Projeto",
+      "Melhor Apresentação",
+      "Melhor Turma",
+      "Destaque do Ano",
+      "Melhor Performance",
+      "Humor da Escola"
+    ];
+
+    const container = document.querySelector('.main-container');
+
+    categorias.forEach((cat, i) => {
+      const bloco = document.createElement('div');
+      bloco.className = 'categoria';
+      bloco.innerHTML = `
+        <h2>${cat}</h2>
+        <div class="winner-box" style="background:#ffad07; padding:12px; border-radius:10px; margin-bottom:15px; text-align:center; color:#fff; font-weight:700;">
+          Vencedor: <span style="color:#fff">A definir</span>
+        </div>
+        <div class="carousel" data-index="0">
+          <div class="carousel-track">
+            ${Array.from({length:7}).map((_,n)=>`
+              <div class='slide'>
+                <img src="p${n+1}.jpg" />
+                <span>Nome ${n+1}</span>
+              </div>
+            `).join('')}
+          </div>
+        </div>
+      `;
+      container.appendChild(bloco);
+    });
+  </script>
+
+</div>
+
+<footer style="display:flex; justify-content:space-between; align-items:center; padding:25px 40px; background:#ffad07; color:#fff;">
+  <div style="display:flex; align-items:center; gap:10px;">
+    <img src="logo_instagram.png" style="height:28px;" />
+    <span>@osc4raios</span>
+  </div>
+  <div style="text-align:right;">
+    <img src="logo.png" style="height:40px; display:block; margin-left:auto;" />
+    <span style="font-size:14px; color:#fff;">© 2025 OSC4RAIOS</span>
+  </div>
+</footer>
+
+<script>
+  /* BOTÃO COPIAR */
+  function copyLink() {
+    const link = document.getElementById("voteLink").href;
+    navigator.clipboard.writeText(link);
+  }
+
+  /* CARROSSEL */
+  document.querySelectorAll('.carousel').forEach(carousel => {
+    let index = 0;
+    const track = carousel.querySelector('.carousel-track');
+    const slides = track.children;
+
+    setInterval(() => {
+      index = (index + 1) % slides.length;
+      track.style.transform = `translateX(-${index * (100/3 + 6.5)}%)`;
+    }, 3000);
+  });
+</script>
+
+</body>
+</html>
