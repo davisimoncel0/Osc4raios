@@ -4,105 +4,104 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Osc4raios</title>
+
   <style>
     :root {
       --gold: #d4af37;
       --bg: #fff;
-      --card: #1a1a1a;
-      --text: #f5f5f5;
+      --text: #000;
     }
 
+    /* ===== BASE ===== */
     body {
       margin: 0;
-      font-family: 'Intro Rust', sans-serif;
+      font-family: Arial, sans-serif;
       background: var(--bg);
       color: var(--text);
+      overflow-x: hidden;
     }
 
     header {
       text-align: center;
-      padding: 50px 0 20px;
-    }
-
-    header img {
-      height: 85px;
-      margin: 0 20px;
+      padding: 30px 0 10px;
     }
 
     .main-container {
       width: 95%;
       max-width: 1200px;
-      margin: 40px auto;
+      margin: 20px auto;
       background: #fff;
-      padding: 40px;
+      padding: 20px;
       border-radius: 20px;
     }
 
-    /* FORMULÁRIO */
+    /* ===== FORM ===== */
     .form-box {
       background: #ffad07;
-      padding: 25px;
-      border-radius: 16px;
-      margin-bottom: 50px;
-      border: 1px solid #ffad07;
+      padding: 20px;
+      border-radius: 14px;
+      margin-bottom: 40px;
     }
 
     .form-title {
       font-size: 20px;
-      margin-bottom: 20px;
-      font-weight: 700;
-      color: #fff;
+      margin-bottom: 15px;
+      font-weight: bold;
       text-align: center;
+      color: #fff;
     }
 
     .form-container {
       display: flex;
       align-items: center;
-      gap: 15px;
-      background: #0a0a0a;
+      gap: 12px;
+      background: #000;
       border: 1px solid #333;
-      padding: 15px;
-      border-radius: 12px;
+      padding: 12px;
+      border-radius: 10px;
+      word-break: break-all;
     }
 
-    /* LINK CLICÁVEL */
     .form-link {
       flex: 1;
       color: #fff;
-      font-size: 16px;
-      word-break: break-all;
       text-decoration: none;
-    }
-
-    .form-link:hover {
-      text-decoration: underline;
+      font-size: 14px;
     }
 
     .copy-btn {
+      width: 40px;
+      height: 40px;
       background: #ffad07;
-      color: #000;
+      border-radius: 8px;
       border: none;
-      width: 45px;
-      height: 45px;
       cursor: pointer;
-      border-radius: 10px;
       font-size: 20px;
-      font-weight: bold;
     }
 
-    /* CATEGORIAS */
+    /* ===== CATEGORIAS ===== */
     .categoria {
-      margin-top: 60px;
+      margin-top: 50px;
     }
 
     .categoria h2 {
       color: #ffad07;
-      font-size: 24px;
-      margin-bottom: 20px;
-      font-weight: 700;
+      font-size: 22px;
+      margin-bottom: 15px;
+      font-weight: bold;
     }
 
-    /* CARROSSEL */
+    .winner-box {
+      background: #ffad07;
+      padding: 10px;
+      border-radius: 8px;
+      color: #fff;
+      font-weight: bold;
+      text-align: center;
+      margin-bottom: 18px;
+    }
+
+    /* ===== CARROSSEL ===== */
     .carousel {
       overflow: hidden;
       width: 100%;
@@ -110,19 +109,18 @@
 
     .carousel-track {
       display: flex;
-      gap: 20px;
-      transition: transform 0.6s ease;
+      gap: 15px;
+      transition: transform 0.5s ease;
     }
 
     .slide {
-      min-width: calc(33.33% - 15px);
-      height: 220px;
-      background: #222;
-      border-radius: 14px;
-      border: 1px solid #333;
-      position: relative;
+      min-width: calc(33.33% - 10px);
+      background: #111;
+      height: 200px;
+      border-radius: 12px;
       overflow: hidden;
-      box-shadow: 0 5px 20px rgba(0,0,0,0.4);
+      position: relative;
+      border: 1px solid #333;
     }
 
     .slide img {
@@ -136,58 +134,66 @@
       bottom: 10px;
       left: 10px;
       background: rgba(0,0,0,0.7);
-      padding: 8px 12px;
-      border-radius: 6px;
+      padding: 6px 10px;
+      border-radius: 5px;
       color: #fff;
-      font-weight: 600;
-    }
-
-    footer {
-      margin-top: 80px;
-      padding: 30px 0;
-      text-align: center;
-      color: #fff;
-      border-top: 1px solid #ffad07;
-    }
-
-    footer a {
-      color: var(--gold);
-      text-decoration: none;
       font-weight: bold;
+      font-size: 14px;
     }
-  
-    /* RESPONSIVO */
-    * { box-sizing: border-box; }
-    html, body { overflow-x: hidden; }
 
+    /* ===== FOOTER ===== */
+    footer {
+      margin-top: 60px;
+      padding: 20px;
+      background: #ffad07;
+      color: #fff;
+      text-align: center;
+    }
+
+    /* ===== RESPONSIVO ===== */
     @media (max-width: 768px) {
-      header { padding: 20px 0; }
-      header img { height: 120px !important; }
-
-      .main-container { padding: 20px; width: 100%; }
-
-      .form-container { flex-direction: column; align-items: stretch; }
-      .copy-btn { width: 100%; height: 45px; }
 
       .slide {
-        min-width: 80% !important;
+        min-width: 85% !important;
         height: 180px;
       }
-      .carousel-track { gap: 12px; }
+
+      .carousel-track {
+        gap: 12px;
+      }
+
+      header img {
+        height: 130px !important;
+      }
     }
 
     @media (max-width: 480px) {
-      .slide { min-width: 90% !important; height: 170px; }
-      .categoria h2 { font-size: 20px; }
-      .form-title { font-size: 18px; }
-    }
 
+      .slide {
+        min-width: 90% !important;
+        height: 170px;
+      }
+
+      .categoria h2 {
+        font-size: 18px;
+      }
+
+      .form-container {
+        flex-direction: column;
+      }
+
+      .copy-btn {
+        width: 100%;
+        height: 45px;
+      }
+    }
   </style>
 </head>
+
 <body>
 
 <header>
-  <img src="logo.png" style="height:200px; display:block; margin:0 auto;" />
+  <img src="logo.png" style="height:180px;" />
 </header>
 
 <div class="main-container">
@@ -197,84 +203,110 @@
     <div class="form-title">Formulário de Votação</div>
 
     <div class="form-container">
-      <a class="form-link" id="voteLink" href="https://docs.google.com/forms/d/e/1FAIpQLSfXVAEqfq-p5TfHLQTibutcFwee8lFELq1VlcxwaVn-Sf4ttw/viewform?usp=publish-editor" target="_blank">
-        https://seulinkdevotacao.com
+      <a class="form-link" id="voteLink" href="https://seulink.com" target="_blank">
+        https://seulink.com
       </a>
       <button class="copy-btn" onclick="copyLink()">📋</button>
     </div>
   </div>
 
-  <!-- 12 CATEGORIAS GERADAS -->
+  <!-- CATEGORIAS JS -->
   <script>
-    const categorias = [
-      "Mais Engraçado",
-      "Mais Militante",
-      "Melhor Jogador de Clash",
-      "Mais Sem Filtro",
-      "Mais Espontâneo",
-      "Mais Estiloso",
-      "Mais Criativo",
-      "Mais Resenha",
-      "Mais Dorminhoco",
-      "Mais Turista",
+    /* ============================
+       👇 AQUI VOCÊ EDITA OS NOMES E FOTOS
+       ============================ */
+    const dadosCategorias = [
+      { nome: "Mais Engraçado", pessoas: [
+        { nome: "ENZO", foto: "eng1.jpg" },
+        { nome: "MURILO CONSTANTINO", foto: "eng2.jpg" },
+        { nome: "GUSTAVO", foto: "eng3.jpg" }
+      ]},
+      { nome: "Mais Militante", pessoas: [
+        { nome: "Pessoa 1", foto: "mil1.jpg" },
+        { nome: "Pessoa 2", foto: "mil2.jpg" },
+        { nome: "Pessoa 3", foto: "mil3.jpg" }
+      ]},
+      { nome: "Melhor Jogador de Clash", pessoas: [
+        { nome: "GUSTAVO", foto: "cl1.jpg" },
+        { nome: "LEONARDO", foto: "cl2.jpg" },
+        { nome: "ENZO", foto: "cl3.jpg" }
+      ]},
+      { nome: "Mais Sem Filtro", pessoas: [
+        { nome: "MARIANNE", foto: "sf1.jpg" },
+        { nome: "ARTUR FERREIRA", foto: "sf2.jpg" },
+        { nome: "MURILO CONSTANTINO", foto: "sf3.jpg" }
+      ]},
+      { nome: "Mais Espontâneo", pessoas: [
+        { nome: "SARA", foto: "esp1.jpg" },
+        { nome: "MURILO CONSTANTINO", foto: "esp2.jpg" },
+        { nome: "ARTUR CELIO", foto: "esp3.jpg" }
+      ]},
+      { nome: "Mais Estiloso", pessoas: [
+        { nome: "GUSTAVO", foto: "est1.jpg" },
+        { nome: "SARA", foto: "est2.jpg" },
+        { nome: "MARIA CLARA", foto: "est3.jpg" }
+      ]},
+      { nome: "Mais Criativo", pessoas: [
+        { nome: "JULIA FREITAS", foto: "cri1.jpg" },
+        { nome: "LETÍCIA", foto: "cri2.jpg" },
+        { nome: "BEATRIZ", foto: "cri3.jpg" }
+      ]},
+      { nome: "Mais Resenha", pessoas: [
+        { nome: "MURILO CONSTANTINO", foto: "res1.jpg" },
+        { nome: "GUSTAVO", foto: "res2.jpg" },
+        { nome: "ENZO", foto: "res3.jpg" }
+      ]},
+      { nome: "Mais Dorminhoco", pessoas: [
+        { nome: "MARIA CLARA", foto: "dor1.jpg" },
+        { nome: "ISABELA", foto: "dor2.jpg" },
+        { nome: "LUCAS PINA", foto: "dor3.jpg" }
+      ]},
+      { nome: "Mais Turista", pessoas: [
+        { nome: "NICOLAS", foto: "tur1.jpg" },
+        { nome: "BEATRIZ SOUSA", foto: "tur2.jpg" },
+        { nome: "ISABELA", foto: "tur3.jpg" }
+      ]}
     ];
 
+    /* ========== GERA AS CATEGORIAS ========== */
     const container = document.querySelector('.main-container');
 
-    categorias.forEach((cat, i) => {
+    dadosCategorias.forEach(cat => {
       const bloco = document.createElement('div');
       bloco.className = 'categoria';
+
       bloco.innerHTML = `
-        <h2>${cat}</h2>
-        <div class="winner-box" style="background:#ffad07; padding:12px; border-radius:10px; margin-bottom:15px; text-align:center; color:#fff; font-weight:700;">
-          Vencedor: <span style="color:#fff">A definir</span>
-        </div>
-        <div class="carousel" data-index="0">
+        <h2>${cat.nome}</h2>
+        <div class="winner-box">Vencedor: A definir</div>
+
+        <div class="carousel">
           <div class="carousel-track">
-            ${Array.from({length:7}).map((_,n)=>`
-              <div class='slide'>
-                <img src="p${n+1}.jpg" />
-                <span>Nome ${n+1}</span>
-              </div>
-            `).join('')}
+            ${cat.pessoas
+              .map(p => `
+                <div class="slide">
+                  <img src="${p.foto}" />
+                  <span>${p.nome}</span>
+                </div>
+              `).join("")}
           </div>
         </div>
       `;
+
       container.appendChild(bloco);
     });
   </script>
 
 </div>
 
-<footer style="display:flex; justify-content:space-between; align-items:center; padding:25px 40px; background:#ffad07; color:#fff;">
-  <div style="display:flex; align-items:center; gap:10px;">
-    <img src="logo_instagram.png" style="height:28px;" />
-    <span>@osc4raios</span>
-  </div>
-  <div style="text-align:right;">
-    <img src="logo.png" style="height:40px; display:block; margin-left:auto;" />
-    <span style="font-size:14px; color:#fff;">© 2025 OSC4RAIOS</span>
-  </div>
+<footer>
+  © 2025 OSC4RAIOS
 </footer>
 
 <script>
-  /* BOTÃO COPIAR */
   function copyLink() {
     const link = document.getElementById("voteLink").href;
     navigator.clipboard.writeText(link);
   }
-
-  /* CARROSSEL */
-  document.querySelectorAll('.carousel').forEach(carousel => {
-    let index = 0;
-    const track = carousel.querySelector('.carousel-track');
-    const slides = track.children;
-
-    setInterval(() => {
-      index = (index + 1) % slides.length;
-      track.style.transform = `translateX(-${index * (100/3 + 6.5)}%)`;
-    }, 3000);
-  });
 </script>
 
 </body>
