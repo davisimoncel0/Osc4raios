@@ -49,12 +49,11 @@
       width: 100%;
       display: block;
       border-radius: 20px;
-      filter: blur(8px) brightness(0.5); /* DESFOCADO ATÉ LIBERAR */
-      pointer-events: none; /* NÃO PERMITIR CLIQUE */
+      filter: blur(8px) brightness(0.5);
+      pointer-events: none;
       transition: 0.5s ease;
     }
 
-    /* BLOQUEIO DO VÍDEO */
     #video-lock {
       position: absolute;
       inset: 0;
@@ -68,7 +67,6 @@
       pointer-events: none;
     }
 
-    /* ANIMAÇÃO DO CADEADO */
     #video-lock i {
       animation: pulse 1.4s infinite;
     }
@@ -158,7 +156,6 @@
       .slide { min-width: 90% !important; }
     }
 
-    /* FOOTER */
     footer {
       background-color: #ffad07;
       margin-top: 50px;
@@ -187,14 +184,10 @@
 <header>
   <img src="logo.png" style="height:160px;" />
 
-  <!-- CONTAGEM REGRESSIVA -->
   <div id="countdown">Carregando...</div>
 </header>
 
-<!-- VÍDEO MULTIMÍDIA COM BLOQUEIO -->
 <div class="video-box">
-
-  <!-- BLOQUEIO -->
   <div id="video-lock">
     <i>🔒</i>
   </div>
@@ -202,12 +195,10 @@
   <video id="meuVideo" autoplay loop muted playsinline>
     <source src="video.mp4" type="video/mp4">
   </video>
-
 </div>
 
 <div class="main-container">
 
-  <!-- JS — CATEGORIAS -->
   <script>
     const dadosCategorias = [
       { nome: "Mais Engraçado", pessoas: [
@@ -241,8 +232,8 @@
         { nome: "SARA", foto: "est3.jpg" }
       ]},
       { nome: "Mais Criativo", pessoas: [
-        { nome: "LETICIA", foto: "cri1.jpg" },
-        { nome: "JULIA FREITAS", foto: "cri2.jpg" },
+        { nome: "LETICIA", foto: "l.png" },
+        { nome: "FELIX", foto: "cri2.jpg" },
         { nome: "BEATRIZ SOUZA", foto: "cri3.jpg" }
       ]},
       { nome: "Mais Resenha", pessoas: [
@@ -265,24 +256,24 @@
         { nome: "BERTOLA E GUSTAVO", foto: "tur2.jpg" },
         { nome: "FELIX E BEATRIZ SOUZA", foto: "tur3.jpg" }
       ]},
-        { nome: "Melhor Casal", pessoas: [
-        { nome: "GABRIEL E LETICIA", foto: "tur1.jpg" },
+      { nome: "Melhor Casal", pessoas: [
+        { nome: "GABRIEL E LETICIA", foto: "gel.png" },
         { nome: "LAURA E ARTHUR ALMEIDA", foto: "tur2.jpg" },
         { nome: "ARTHUR BERTONI E BEATRIZ SOUZA", foto: "tur3.jpg" }
       ]},
-        { nome: "Mais Prestativo", pessoas: [
+      { nome: "Mais Prestativo", pessoas: [
         { nome: "LAURA", foto: "tur1.jpg" },
-        { nome: "JULIA FREITAS", foto: "tur2.jpg" },
-        { nome: "DAVI", foto: "tur3.jpg" }
+        { nome: "FELIX", foto: "tur2.jpg" },
+        { nome: "DAVI", foto: "d.png" }
       ]},
-        { nome: "Mais Comunicativo", pessoas: [
+      { nome: "Mais Comunicativo", pessoas: [
         { nome: "YASMIN", foto: "tur1.jpg" },
         { nome: "LAURA", foto: "tur2.jpg" },
         { nome: "SOPHIA", foto: "tur3.jpg" }
       ]},
-        { nome: "Melhor Multimídia", pessoas: [
+      { nome: "Melhor Multimídia", pessoas: [
         { nome: "LETICIA", foto: "tur1.jpg" },
-        { nome: "DAVI", foto: "tur2.jpg" },
+        { nome: "DAVI", foto: "d.png" },
         { nome: "BEATRIZ MITIKO", foto: "tur3.jpg" }
       ]},
     ];
@@ -335,10 +326,8 @@ function confete() {
 window.onload = confete;
 </script>
 
-<!-- CDN CONFETTI -->
 <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.5.1/dist/confetti.browser.min.js"></script>
 
-<!-- CONTAGEM REGRESSIVA + DESBLOQUEIO DO VÍDEO -->
 <script>
 function atualizarContagem() {
   const destino = new Date("November 26, 2025 09:05:00 GMT-3").getTime();
@@ -349,7 +338,6 @@ function atualizarContagem() {
   if (distancia <= 0) {
     document.getElementById("countdown").innerHTML = "🎉 Começou!";
 
-    // DESBLOQUEAR VÍDEO
     document.getElementById("video-lock").style.display = "none";
     const vid = document.getElementById("meuVideo");
     vid.style.filter = "none";
@@ -370,10 +358,35 @@ function atualizarContagem() {
 setInterval(atualizarContagem, 1000);
 </script>
 
-<!-- FOOTER -->
+<!-- ⭐ NOVO: CARROSSEL AUTOMÁTICO NO MOBILE -->
+<script>
+function iniciarCarrosseis() {
+  if (window.innerWidth > 768) return; // somente mobile
+
+  const todosCarrosseis = document.querySelectorAll(".carousel-track");
+
+  todosCarrosseis.forEach(track => {
+    const slides = track.children;
+    let index = 0;
+
+    setInterval(() => {
+      index++;
+      if (index >= slides.length) index = 0;
+
+      const slideWidth = slides[0].offsetWidth + 15; 
+      track.style.transform = `translateX(${-slideWidth * index}px)`;
+    }, 3000);
+  });
+}
+
+window.addEventListener("load", iniciarCarrosseis);
+</script>
+
 <footer>
   <a href="https://instagram.com/OSC4RAIOS" target="_blank">
     <img src="logo_instagram.png" alt="Instagram">@OSC4RAIOS
   </a>
+</footer>
+
 </body>
 </html>
