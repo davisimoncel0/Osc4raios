@@ -12,18 +12,71 @@
       --text: #000;
     }
 
-    /* ===== BASE ===== */
     body {
       margin: 0;
       font-family: Arial, sans-serif;
-      background: var(--bg);
+      background: linear-gradient(#fff,#ffad07);
       color: var(--text);
       overflow-x: hidden;
     }
 
     header {
       text-align: center;
-      padding: 30px 0 10px;
+      padding-top: 20px;
+    }
+
+    /* CONTAGEM REGRESSIVA */
+    #countdown {
+      font-size: 26px;
+      margin-top: 10px;
+      font-weight: bold;
+      color: #ffad07;
+      text-align: center;
+    }
+
+    /* PLAYER DE VÍDEO */
+    .video-box {
+      width: 100%;
+      max-width: 900px;
+      margin: 25px auto;
+      border-radius: 20px;
+      overflow: hidden;
+      box-shadow: 0 5px 20px rgba(0,0,0,0.3);
+      position: relative;
+    }
+
+    video {
+      width: 100%;
+      display: block;
+      border-radius: 20px;
+      filter: blur(8px) brightness(0.5); /* DESFOCADO ATÉ LIBERAR */
+      pointer-events: none; /* NÃO PERMITIR CLIQUE */
+      transition: 0.5s ease;
+    }
+
+    /* BLOQUEIO DO VÍDEO */
+    #video-lock {
+      position: absolute;
+      inset: 0;
+      background: rgba(0,0,0,0.55);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      z-index: 5;
+      color: white;
+      font-size: 60px;
+      pointer-events: none;
+    }
+
+    /* ANIMAÇÃO DO CADEADO */
+    #video-lock i {
+      animation: pulse 1.4s infinite;
+    }
+
+    @keyframes pulse {
+      0% { transform: scale(1); opacity: 1; }
+      50% { transform: scale(1.1); opacity: 0.7; }
+      100% { transform: scale(1); opacity: 1; }
     }
 
     .main-container {
@@ -35,51 +88,7 @@
       border-radius: 20px;
     }
 
-    /* ===== FORM ===== */
-    .form-box {
-      background: #ffad07;
-      padding: 20px;
-      border-radius: 14px;
-      margin-bottom: 40px;
-    }
-
-    .form-title {
-      font-size: 20px;
-      margin-bottom: 15px;
-      font-weight: bold;
-      text-align: center;
-      color: #fff;
-    }
-
-    .form-container {
-      display: flex;
-      align-items: center;
-      gap: 12px;
-      background: #000;
-      border: 1px solid #333;
-      padding: 12px;
-      border-radius: 10px;
-      word-break: break-all;
-    }
-
-    .form-link {
-      flex: 1;
-      color: #fff;
-      text-decoration: none;
-      font-size: 14px;
-    }
-
-    .copy-btn {
-      width: 40px;
-      height: 40px;
-      background: #ffad07;
-      border-radius: 8px;
-      border: none;
-      cursor: pointer;
-      font-size: 20px;
-    }
-
-    /* ===== CATEGORIAS ===== */
+    /* CATEGORIAS */
     .categoria {
       margin-top: 50px;
     }
@@ -101,7 +110,7 @@
       margin-bottom: 18px;
     }
 
-    /* ===== CARROSSEL ===== */
+    /* CARROSSEL */
     .carousel {
       overflow: hidden;
       width: 100%;
@@ -141,51 +150,34 @@
       font-size: 14px;
     }
 
-    /* ===== FOOTER ===== */
-    footer {
-      margin-top: 60px;
-      padding: 20px;
-      background: #ffad07;
-      color: #fff;
-      text-align: center;
-    }
-
-    /* ===== RESPONSIVO ===== */
     @media (max-width: 768px) {
-
-      .slide {
-        min-width: 85% !important;
-        height: 180px;
-      }
-
-      .carousel-track {
-        gap: 12px;
-      }
-
-      header img {
-        height: 130px !important;
-      }
+      .slide { min-width: 85% !important; }
     }
 
     @media (max-width: 480px) {
+      .slide { min-width: 90% !important; }
+    }
 
-      .slide {
-        min-width: 90% !important;
-        height: 170px;
-      }
+    /* FOOTER */
+    footer {
+      background-color: #ffad07;
+      margin-top: 50px;
+      text-align: center;
+      padding: 20px;
+      color: #fff;
+    }
 
-      .categoria h2 {
-        font-size: 18px;
-      }
+    footer a {
+      color: #fff;
+      text-decoration: none;
+      font-weight: bold;
+      font-size: 18px;
+    }
 
-      .form-container {
-        flex-direction: column;
-      }
-
-      .copy-btn {
-        width: 100%;
-        height: 45px;
-      }
+    footer img {
+      height: 28px;
+      vertical-align: middle;
+      margin-right: 8px;
     }
   </style>
 </head>
@@ -193,82 +185,108 @@
 <body>
 
 <header>
-  <img src="logo.png" style="height:180px;" />
+  <img src="logo.png" style="height:160px;" />
+
+  <!-- CONTAGEM REGRESSIVA -->
+  <div id="countdown">Carregando...</div>
 </header>
+
+<!-- VÍDEO MULTIMÍDIA COM BLOQUEIO -->
+<div class="video-box">
+
+  <!-- BLOQUEIO -->
+  <div id="video-lock">
+    <i>🔒</i>
+  </div>
+
+  <video id="meuVideo" autoplay loop muted playsinline>
+    <source src="video.mp4" type="video/mp4">
+  </video>
+
+</div>
 
 <div class="main-container">
 
-  <!-- FORMULÁRIO -->
-  <div class="form-box">
-    <div class="form-title">Formulário de Votação</div>
-
-    <div class="form-container">
-      <a class="form-link" id="voteLink" href="https://seulink.com" target="_blank">
-        https://seulink.com
-      </a>
-      <button class="copy-btn" onclick="copyLink()">📋</button>
-    </div>
-  </div>
-
-  <!-- CATEGORIAS JS -->
+  <!-- JS — CATEGORIAS -->
   <script>
-    /* ============================
-       👇 AQUI VOCÊ EDITA OS NOMES E FOTOS
-       ============================ */
     const dadosCategorias = [
       { nome: "Mais Engraçado", pessoas: [
-        { nome: "ENZO", foto: "eng1.jpg" },
-        { nome: "MURILO CONSTANTINO", foto: "eng2.jpg" },
-        { nome: "GUSTAVO", foto: "eng3.jpg" }
+        { nome: "Pessoa 1", foto: "eng1.jpg" },
+        { nome: "Pessoa 2", foto: "eng2.jpg" },
+        { nome: "Pessoa 3", foto: "eng3.jpg" }
       ]},
       { nome: "Mais Militante", pessoas: [
-        { nome: "TALYAH", foto: "mil1.jpg" },
-        { nome: "GIULIA", foto: "mil2.jpg" },
-        { nome: "JULIA FREITAS", foto: "mil3.jpg" }
+        { nome: "Pessoa 1", foto: "mil1.jpg" },
+        { nome: "Pessoa 2", foto: "mil2.jpg" },
+        { nome: "Pessoa 3", foto: "mil3.jpg" }
       ]},
       { nome: "Melhor Jogador de Clash", pessoas: [
-        { nome: "GUSTAVO", foto: "cl1.jpg" },
-        { nome: "LEONARDO", foto: "cl2.jpg" },
-        { nome: "ENZO", foto: "cl3.jpg" }
+        { nome: "Jogador 1", foto: "cl1.jpg" },
+        { nome: "Jogador 2", foto: "cl2.jpg" },
+        { nome: "Jogador 3", foto: "cl3.jpg" }
       ]},
       { nome: "Mais Sem Filtro", pessoas: [
-        { nome: "MARIANNE", foto: "sf1.jpg" },
-        { nome: "ARTUR FERREIRA", foto: "sf2.jpg" },
-        { nome: "MURILO CONSTANTINO", foto: "sf3.jpg" }
+        { nome: "Pessoa 1", foto: "sf1.jpg" },
+        { nome: "Pessoa 2", foto: "sf2.jpg" },
+        { nome: "Pessoa 3", foto: "sf3.jpg" }
       ]},
       { nome: "Mais Espontâneo", pessoas: [
-        { nome: "SARA", foto: "esp1.jpg" },
-        { nome: "MURILO CONSTANTINO", foto: "esp2.jpg" },
-        { nome: "ARTUR CELIO", foto: "esp3.jpg" }
+        { nome: "Pessoa 1", foto: "esp1.jpg" },
+        { nome: "Pessoa 2", foto: "esp2.jpg" },
+        { nome: "Pessoa 3", foto: "esp3.jpg" }
       ]},
       { nome: "Mais Estiloso", pessoas: [
-        { nome: "GUSTAVO", foto: "est1.jpg" },
-        { nome: "SARA", foto: "est2.jpg" },
-        { nome: "MARIA CLARA", foto: "est3.jpg" }
+        { nome: "Pessoa 1", foto: "est1.jpg" },
+        { nome: "Pessoa 2", foto: "est2.jpg" },
+        { nome: "Pessoa 3", foto: "est3.jpg" }
       ]},
       { nome: "Mais Criativo", pessoas: [
-        { nome: "JULIA FREITAS", foto: "cri1.jpg" },
-        { nome: "LETÍCIA", foto: "cri2.jpg" },
-        { nome: "BEATRIZ SOUZA", foto: "cri3.jpg" }
+        { nome: "Pessoa 1", foto: "cri1.jpg" },
+        { nome: "Pessoa 2", foto: "cri2.jpg" },
+        { nome: "Pessoa 3", foto: "cri3.jpg" }
       ]},
       { nome: "Mais Resenha", pessoas: [
-        { nome: "MURILO CONSTANTINO", foto: "res1.jpg" },
-        { nome: "GUSTAVO", foto: "res2.jpg" },
-        { nome: "ENZO", foto: "res3.jpg" }
+        { nome: "Pessoa 1", foto: "res1.jpg" },
+        { nome: "Pessoa 2", foto: "res2.jpg" },
+        { nome: "Pessoa 3", foto: "res3.jpg" }
       ]},
       { nome: "Mais Dorminhoco", pessoas: [
-        { nome: "MARIA CLARA", foto: "dor1.jpg" },
-        { nome: "ISABELA", foto: "dor2.jpg" },
-        { nome: "LUCAS PINA", foto: "dor3.jpg" }
+        { nome: "Pessoa 1", foto: "dor1.jpg" },
+        { nome: "Pessoa 2", foto: "dor2.jpg" },
+        { nome: "Pessoa 3", foto: "dor3.jpg" }
       ]},
       { nome: "Mais Turista", pessoas: [
-        { nome: "NICOLAS", foto: "tur1.jpg" },
-        { nome: "BEATRIZ SOUZA", foto: "tur2.jpg" },
-        { nome: "ISABELA", foto: "tur3.jpg" }
-      ]}
+        { nome: "Pessoa 1", foto: "tur1.jpg" },
+        { nome: "Pessoa 2", foto: "tur2.jpg" },
+        { nome: "Pessoa 3", foto: "tur3.jpg" }
+      ]},
+      { nome: "Dupla Dinâmica", pessoas: [
+        { nome: "Pessoa 1", foto: "tur1.jpg" },
+        { nome: "Pessoa 2", foto: "tur2.jpg" },
+        { nome: "Pessoa 3", foto: "tur3.jpg" }
+      ]},
+        { nome: "Melhor Casal", pessoas: [
+        { nome: "Pessoa 1", foto: "tur1.jpg" },
+        { nome: "Pessoa 2", foto: "tur2.jpg" },
+        { nome: "Pessoa 3", foto: "tur3.jpg" }
+      ]},
+        { nome: "Mais Prestativo", pessoas: [
+        { nome: "Pessoa 1", foto: "tur1.jpg" },
+        { nome: "Pessoa 2", foto: "tur2.jpg" },
+        { nome: "Pessoa 3", foto: "tur3.jpg" }
+      ]},
+        { nome: "Mais Comunicativo", pessoas: [
+        { nome: "Pessoa 1", foto: "tur1.jpg" },
+        { nome: "Pessoa 2", foto: "tur2.jpg" },
+        { nome: "Pessoa 3", foto: "tur3.jpg" }
+      ]},
+        { nome: "Melhor Multimídia", pessoas: [
+        { nome: "Pessoa 1", foto: "tur1.jpg" },
+        { nome: "Pessoa 2", foto: "tur2.jpg" },
+        { nome: "Pessoa 3", foto: "tur3.jpg" }
+      ]},
     ];
 
-    /* ========== GERA AS CATEGORIAS ========== */
     const container = document.querySelector('.main-container');
 
     dadosCategorias.forEach(cat => {
@@ -278,7 +296,6 @@
       bloco.innerHTML = `
         <h2>${cat.nome}</h2>
         <div class="winner-box">Vencedor: A definir</div>
-
         <div class="carousel">
           <div class="carousel-track">
             ${cat.pessoas
@@ -298,16 +315,65 @@
 
 </div>
 
-<footer>
-  © 2025 OSC4RAIOS
-</footer>
-
+<!-- CONFETES -->
 <script>
-  function copyLink() {
-    const link = document.getElementById("voteLink").href;
-    navigator.clipboard.writeText(link);
-  }
+function confete() {
+  const duration = 1500;
+  const end = Date.now() + duration;
+
+  (function frame() {
+    confetti({
+      particleCount: 5,
+      spread: 70,
+      origin: { y: 0 }
+    });
+
+    if (Date.now() < end) requestAnimationFrame(frame);
+  })();
+}
+
+window.onload = confete;
 </script>
 
+<!-- CDN CONFETTI -->
+<script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.5.1/dist/confetti.browser.min.js"></script>
+
+<!-- CONTAGEM REGRESSIVA + DESBLOQUEIO DO VÍDEO -->
+<script>
+function atualizarContagem() {
+  const destino = new Date("November 26, 2025 09:05:00 GMT-3").getTime();
+  const agora = Date.now();
+
+  const distancia = destino - agora;
+
+  if (distancia <= 0) {
+    document.getElementById("countdown").innerHTML = "🎉 Começou!";
+
+    // DESBLOQUEAR VÍDEO
+    document.getElementById("video-lock").style.display = "none";
+    const vid = document.getElementById("meuVideo");
+    vid.style.filter = "none";
+    vid.style.pointerEvents = "auto";
+
+    return;
+  }
+
+  const dias = Math.floor(distancia / (1000 * 60 * 60 * 24));
+  const horas = Math.floor((distancia % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+  const minutos = Math.floor((distancia % (1000 * 60 * 60)) / (1000 * 60));
+  const segundos = Math.floor((distancia % (1000 * 60)) / 1000);
+
+  document.getElementById("countdown").innerHTML =
+    `${dias}d ${horas}h ${minutos}m ${segundos}s`;
+}
+
+setInterval(atualizarContagem, 1000);
+</script>
+
+<!-- FOOTER -->
+<footer>
+  <a href="https://instagram.com/OSC4RAIOS" target="_blank">
+    <img src="logo_instagram.png" alt="Instagram">@OSC4RAIOS
+  </a>
 </body>
 </html>
