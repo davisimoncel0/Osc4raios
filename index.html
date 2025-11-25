@@ -1,392 +1,694 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
   <title>Osc4raios</title>
 
   <style>
-    :root {
-      --gold: #d4af37;
-      --bg: #fff;
-      --text: #000;
+    :root{
+      --gold:#F0A307;
+      --neon:#F0A307;
+      --bg:#fff;
+      --text:#111;
+    }
+    *{box-sizing:border-box}
+    body{
+      margin:0;
+      font-family:Arial,Helvetica,sans-serif;
+      background:var(--bg);
+      color:var(--text);
+      -webkit-font-smoothing:antialiased;
+      -moz-osx-font-smoothing:grayscale;
     }
 
-    body {
-      margin: 0;
-      font-family: Arial, sans-serif;
-      background: linear-gradient(#fff);
-      color: var(--text);
-      overflow-x: hidden;
+    header{ text-align:center; padding:18px 12px 6px; }
+    header img{ height:110px; }
+
+    #countdown{
+      font-weight:700;
+      color:var(--gold);
+      font-size:20px;
+      margin-top:6px;
     }
 
-    header {
-      text-align: center;
-      padding-top: 20px;
+    /* VIDEO BOX */
+    .video-box{
+      width:95%;
+      max-width:980px;
+      margin:18px auto;
+      border-radius:14px;
+      overflow:hidden;
+      position:relative;
+      box-shadow:0 6px 30px rgba(0,0,0,.12);
+      background:#000;
     }
 
-    /* CONTAGEM REGRESSIVA */
-    #countdown {
-      font-size: 26px;
-      margin-top: 10px;
-      font-weight: bold;
-      color: #ffad07;
-      text-align: center;
+    #meuVideo{
+      width:100%;
+      display:block;
+      border-radius:14px;
+      filter: blur(90px) brightness(.6); /* bloqueado visualmente até liberar */
+      pointer-events:none;
+      transition:filter .5s ease;
     }
 
-    /* PLAYER DE VÍDEO */
-    .video-box {
-      width: 90%;
-      max-width: 900px;
-      margin: 25px auto;
-      border-radius: 20px;
-      overflow: hidden;
-      box-shadow: 0 5px 20px rgba(0,0,0,0.3);
-      position: relative;
+    #video-lock{
+      position:absolute;
+      inset:0;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      z-index:6;
+      background:rgba(0,0,0,.45);
+      color:#fff;
+      font-size:56px;
+      pointer-events:none;
     }
 
-    video {
-      width: 100%;
-      display: block;
-      border-radius: 20px;
-      filter: blur(8px) brightness(0.5);
-      pointer-events: none;
-      transition: 0.5s ease;
+    /* PROGRESS SLIDER + PLAY/PAUSE */
+    .video-controls{
+      width:95%;
+      max-width:980px;
+      margin:10px auto 0;
+      display:flex;
+      gap:10px;
+      align-items:center;
+    }
+    .video-controls input[type="range"]{
+      flex:1;
+      -webkit-appearance:none;
+      height:6px;
+      border-radius:6px;
+      background:linear-gradient(90deg,var(--gold),#eee);
+      outline:none;
+    }
+    .video-controls .time{
+      width:56px;
+      text-align:center;
+      font-size:14px;
+      color:#555;
+    }
+    .btn-play{
+      width:44px;
+      height:36px;
+      border-radius:8px;
+      border:0;
+      background:var(--gold);
+      color:#fff;
+      font-weight:700;
+      cursor:pointer;
     }
 
-    #video-lock {
-      position: absolute;
-      inset: 0;
-      background: rgba(0,0,0,0.55);
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      z-index: 5;
-      color: white;
-      font-size: 60px;
-      pointer-events: none;
-    }
-
-    #video-lock i {
-      animation: pulse 1.4s infinite;
-    }
-
-    @keyframes pulse {
-      0% { transform: scale(1); opacity: 1; }
-      50% { transform: scale(1.1); opacity: 0.7; }
-      100% { transform: scale(1); opacity: 1; }
-    }
-
-    .main-container {
-      width: 95%;
-      max-width: 1200px;
-      margin: 20px auto;
+    .main-container{
+      width:95%;
+      max-width:1200px;
+      margin:18px auto 64px;
+      padding:16px;
+      border-radius:12px;
       background: #fff;
-      padding: 20px;
-      border-radius: 20px;
     }
 
-    /* CATEGORIAS */
-    .categoria {
-      margin-top: 50px;
+    .categoria{ margin-top:28px; }
+
+    .categoria h2{
+      color:var(--gold);
+      font-size:18px;
+      margin:0 0 8px;
     }
 
-    .categoria h2 {
-      color: #ffad07;
-      font-size: 22px;
-      margin-bottom: 15px;
-      font-weight: bold;
+    .winner-box{
+      background:var(--gold);
+      color:#fff;
+      padding:8px 10px;
+      border-radius:8px;
+      font-weight:700;
+      text-align:center;
+      margin-bottom:12px;
+      opacity:0;
+      transform:translateY(6px);
+      transition:opacity .5s ease, transform .5s ease;
     }
-
-    .winner-box {
-      background: #ffad07;
-      padding: 10px;
-      border-radius: 8px;
-      color: #fff;
-      font-weight: bold;
-      text-align: center;
-      margin-bottom: 18px;
-    }
+    .winner-box.show{ opacity:1; transform:translateY(0); }
 
     /* CARROSSEL */
-    .carousel {
-      overflow: hidden;
-      width: 100%;
+    .carousel{ position:relative; overflow:hidden; }
+    .carousel-track{
+      display:flex;
+      gap:12px;
+      transition:transform .45s ease;
+      will-change:transform;
+    }
+    .slide{
+      min-width:calc(33.333% - 8px);
+      background:#111;
+      border-radius:10px;
+      height:180px;
+      overflow:hidden;
+      position:relative;
+      border:2px solid #333;
+      transition:filter .35s ease, transform .35s ease, box-shadow .35s ease;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+    }
+    .slide img{ width:100%; height:100%; object-fit:cover; display:block; }
+
+    .slide span{
+      position:absolute; left:8px; bottom:8px;
+      background:rgba(0,0,0,.6); color:#fff; padding:6px 9px; border-radius:6px;
+      font-weight:700; font-size:13px;
     }
 
-    .carousel-track {
-      display: flex;
-      gap: 15px;
-      transition: transform 0.5s ease;
+    .slide.winner {
+  position: relative;
+  overflow: hidden;
+}
+
+.slide.winner img {
+  border: 4px solid var(--neon);
+  border-radius: 10px;
+  box-shadow: 0 0 18px var(--neon);
+  filter: brightness(0.8) sepia(90) hue-rotate(100deg) saturate(2);
+  transition: filter .35s ease, box-shadow .35s ease, transform .35s ease;
+}
+
+.slide span {
+  position: absolute; 
+  left: 8px; 
+  bottom: 8px;
+  background: rgba(0,0,0,0.6); /* fundo escuro semi-transparente */
+  color: #fff;
+  padding: 6px 9px;
+  border-radius: 6px;
+  font-weight:700;
+  font-size:13px;
+}
+
+
+.slide.winner::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: var(--neon);
+  mix-blend-mode: multiply;
+  pointer-events: none;
+  border-radius: 10px;
+}
+
+
+
+
+
+    .slide.dimmed{ filter:brightness(.35) grayscale(.3); }
+
+    /* arrows (restored style ‹ ›) */
+    .arrow{
+      position:absolute;
+      top:50%;
+      transform:translateY(-50%);
+      background:rgba(0,0,0,.45);
+      color:#fff;
+      border-radius:50%;
+      width:44px; height:44px;
+      display:flex; align-items:center; justify-content:center;
+      cursor:pointer; z-index:8; font-size:24px;
+      user-select:none;
+      transition:background .2s ease, transform .12s ease;
+    }
+    .arrow:hover{ background:rgba(0,0,0,.7); transform:translateY(-50%) scale(1.04); }
+    .arrow.left{ left:6px; }
+    .arrow.right{ right:6px; }
+
+    /* Hide arrows by default (desktop); show only on mobile */
+    .arrow{ display:none; }
+    @media (max-width: 768px){
+      .arrow{ display:flex; width:40px; height:40px; font-size:22px; }
+      .slide{ min-width:85% !important; }
     }
 
-    .slide {
-      min-width: calc(33.33% - 10px);
-      background: #111;
-      height: 200px;
-      border-radius: 12px;
-      overflow: hidden;
-      position: relative;
-      border: 1px solid #333;
+    @media (max-width:480px){
+      .slide{ min-width:90% !important; }
     }
 
-    .slide img {
+    /* confetti canvas sits on top full page */
+    #confetti-canvas {
+      position: fixed;
+      top: 0;
+      left: 0;
       width: 100%;
       height: 100%;
-      object-fit: cover;
+      pointer-events: none;
     }
 
-    .slide span {
-      position: absolute;
-      bottom: 10px;
-      left: 10px;
-      background: rgba(0,0,0,0.7);
-      padding: 6px 10px;
-      border-radius: 5px;
-      color: #fff;
-      font-weight: bold;
-      font-size: 14px;
+
+    footer{
+      text-align:center; padding:20px 10px; background:var(--gold); color:#fff; margin-top:36px;
     }
 
-    @media (max-width: 768px) {
-      .slide { min-width: 85% !important; }
-    }
-
-    @media (max-width: 480px) {
-      .slide { min-width: 90% !important; }
-    }
-
-    footer {
-      background-color: #ffad07;
-      margin-top: 50px;
-      text-align: center;
-      padding: 20px;
-      color: #fff;
-    }
-
-    footer a {
-      color: #fff;
-      text-decoration: none;
-      font-weight: bold;
-      font-size: 18px;
-    }
-
-    footer img {
-      height: 28px;
-      vertical-align: middle;
-      margin-right: 8px;
-    }
   </style>
 </head>
-
 <body>
 
 <header>
-  <img src="logo.png" style="height:160px;" />
-
+  <img src="logo.png" alt="logo" />
   <div id="countdown">Carregando...</div>
 </header>
 
+<!-- VIDEO -->
 <div class="video-box">
-  <div id="video-lock">
-    <i>🔒</i>
-  </div>
-
-  <video id="meuVideo" autoplay loop muted playsinline>
-    <source src="video.mp4" type="video/mp4">
+  <video id="meuVideo" preload="metadata" playsinline>
+    <source src="video.mp4" type="video/mp4" />
+    Seu navegador não suporta vídeo.
   </video>
+  <div id="video-lock">🔒</div>
 </div>
 
-<div class="main-container">
-
-  <script>
-    const dadosCategorias = [
-      { nome: "Mais Engraçado", pessoas: [
-        { nome: "ENZO", foto: "eng1.jpg" },
-        { nome: "MURLO", foto: "eng2.jpg" },
-        { nome: "VITOR", foto: "eng3.jpg" }
-      ]},
-      { nome: "Mais Militante", pessoas: [
-        { nome: "FELIX", foto: "f.png" },
-        { nome: "TALYAH", foto: "mil2.jpg" },
-        { nome: "GIULIA", foto: "giu.png" }
-      ]},
-      { nome: "Melhor Jogador de Clash", pessoas: [
-        { nome: "ENZO", foto: "cl1.jpg" },
-        { nome: "LEONARDO", foto: "cl2.jpg" },
-        { nome: "GUSTAVO", foto: "gusta.png" }
-      ]},
-      { nome: "Mais Sem Filtro", pessoas: [
-        { nome: "NICOLAS", foto: "sf1.jpg" },
-        { nome: "MÁRIO", foto: "m.png" },
-        { nome: "MURLO", foto: "sf3.jpg" }
-      ]},
-      { nome: "Mais Espontâneo", pessoas: [
-        { nome: "MURLO", foto: "esp1.jpg" },
-        { nome: "SARA", foto: "esp2.jpg" },
-        { nome: "SOPHIA", foto: "so.png" }
-      ]},
-      { nome: "Mais Estiloso", pessoas: [
-        { nome: "MARIA CLARA", foto: "est1.jpg" },
-        { nome: "GUSTAVO", foto: "gusta.png" },
-        { nome: "SARA", foto: "est3.jpg" }
-      ]},
-      { nome: "Mais Criativo", pessoas: [
-        { nome: "LETICIA", foto: "l.png" },
-        { nome: "FELIX", foto: "f.png" },
-        { nome: "BEATRIZ SOUZA", foto: "bs.png" }
-      ]},
-      { nome: "Mais Resenha", pessoas: [
-        { nome: "ENZO", foto: "res1.jpg" },
-        { nome: "MURLO", foto: "res2.jpg" },
-        { nome: "GUSTAVO", foto: "gusta.png" }
-      ]},
-      { nome: "Mais Dorminhoco", pessoas: [
-        { nome: "MARIA CLARA", foto: "dor1.jpg" },
-        { nome: "LUCAS PINA", foto: "dor2.jpg" },
-        { nome: "ISABELA", foto: "dor3.jpg" }
-      ]},
-      { nome: "Mais Turista", pessoas: [
-        { nome: "BEATRIZ SOUZA", foto: "bs.png" },
-        { nome: "ISABELA", foto: "tur2.jpg" },
-        { nome: "NICOLAS", foto: "tur3.jpg" }
-      ]},
-      { nome: "Dupla Dinâmica", pessoas: [
-        { nome: "LAURA E YASMIN", foto: "tur1.jpg" },
-        { nome: "BERTOLA E GUSTAVO", foto: "tur2.jpg" },
-        { nome: "FELIX E BEATRIZ SOUZA", foto: "feb.jpeg" }
-      ]},
-      { nome: "Melhor Casal", pessoas: [
-        { nome: "GABRIEL E LETICIA", foto: "gel.png" },
-        { nome: "LAURA E ARTHUR ALMEIDA", foto: "tur2.jpg" },
-        { nome: "ARTHUR BERTONI E BEATRIZ SOUZA", foto: "tur3.jpg" }
-      ]},
-      { nome: "Mais Prestativo", pessoas: [
-        { nome: "LAURA", foto: "tur1.jpg" },
-        { nome: "FELIX", foto: "f.png" },
-        { nome: "DAVI", foto: "d.png" }
-      ]},
-      { nome: "Mais Comunicativo", pessoas: [
-        { nome: "YASMIN", foto: "yas.png" },
-        { nome: "LAURA", foto: "tur2.jpg" },
-        { nome: "SOPHIA", foto: "so.jpeg" }
-      ]},
-      { nome: "Melhor Multimídia", pessoas: [
-        { nome: "LETICIA", foto: "tur1.jpg" },
-        { nome: "DAVI", foto: "d.png" },
-        { nome: "BEATRIZ MITIKO", foto: "mitiko.png" }
-      ]},
-    ];
-
-    const container = document.querySelector('.main-container');
-
-    dadosCategorias.forEach(cat => {
-      const bloco = document.createElement('div');
-      bloco.className = 'categoria';
-
-      bloco.innerHTML = `
-        <h2>${cat.nome}</h2>
-        <div class="winner-box">Vencedor: A definir</div>
-        <div class="carousel">
-          <div class="carousel-track">
-            ${cat.pessoas
-              .map(p => `
-                <div class="slide">
-                  <img src="${p.foto}" />
-                  <span>${p.nome}</span>
-                </div>
-              `).join("")}
-          </div>
-        </div>
-      `;
-
-      container.appendChild(bloco);
-    });
-  </script>
-
+<div class="video-controls" aria-label="Controles do vídeo">
+  <button id="playPause" class="btn-play" aria-label="Play">▶</button>
+  <div class="time" id="time-cur">00:00</div>
+  <input id="videoSlider" type="range" min="0" max="100" step="0.01" value="0" />
+  <div class="time" id="time-dur">00:00</div>
 </div>
 
-<!-- CONFETES -->
-<script>
-function confete() {
-  const duration = 1500;
-  const end = Date.now() + duration;
+<div class="main-container" id="mainContainer">
+  <!-- categorias geradas por JS -->
+</div>
 
-  (function frame() {
-    confetti({
-      particleCount: 5,
-      spread: 70,
-      origin: { y: 0 }
-    });
-
-    if (Date.now() < end) requestAnimationFrame(frame);
-  })();
-}
-
-window.onload = confete;
-</script>
-
-<script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.5.1/dist/confetti.browser.min.js"></script>
-
-<script>
-function atualizarContagem() {
-  const destino = new Date("November 26, 2025 09:05:00 GMT-3").getTime();
-  const agora = Date.now();
-
-  const distancia = destino - agora;
-
-  if (distancia <= 0) {
-    document.getElementById("countdown").innerHTML = "🎉 Começou!";
-
-    document.getElementById("video-lock").style.display = "none";
-    const vid = document.getElementById("meuVideo");
-    vid.style.filter = "none";
-    vid.style.pointerEvents = "auto";
-
-    return;
-  }
-
-  const dias = Math.floor(distancia / (1000 * 60 * 60 * 24));
-  const horas = Math.floor((distancia % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
-  const minutos = Math.floor((distancia % (1000 * 60 * 60)) / (1000 * 60));
-  const segundos = Math.floor((distancia % (1000 * 60)) / 1000);
-
-  document.getElementById("countdown").innerHTML =
-    `${dias}d ${horas}h ${minutos}m ${segundos}s`;
-}
-
-setInterval(atualizarContagem, 1000);
-</script>
-
-<!-- ⭐ NOVO: CARROSSEL AUTOMÁTICO NO MOBILE -->
-<script>
-function iniciarCarrosseis() {
-  if (window.innerWidth > 768) return; // somente mobile
-
-  const todosCarrosseis = document.querySelectorAll(".carousel-track");
-
-  todosCarrosseis.forEach(track => {
-    const slides = track.children;
-    let index = 0;
-
-    setInterval(() => {
-      index++;
-      if (index >= slides.length) index = 0;
-
-      const slideWidth = slides[0].offsetWidth + 15; 
-      track.style.transform = `translateX(${-slideWidth * index}px)`;
-    }, 3000);
-  });
-}
-
-window.addEventListener("load", iniciarCarrosseis);
-</script>
+<!-- canvas confetti -->
+<canvas id="confetti-canvas"></canvas>
 
 <footer>
-  <a href="https://instagram.com/OSC4RAIOS" target="_blank">
-    <img src="logo_instagram.png" alt="Instagram">@OSC4RAIOS
+  <a href="https://instagram.com/OSC4RAIOS" target="_blank" style="color:#fff;text-decoration:none;font-weight:700;">
+    <img src="logo_instagram.png" alt="" style="height:22px;vertical-align:middle;margin-right:8px;">@OSC4RAIOS
   </a>
 </footer>
 
+<!-- canvas-confetti lib -->
+<script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.5.1/dist/confetti.browser.min.js"></script>
+
+<script>
+/* --------------------------
+  DADOS (vencedores já definidos)
+---------------------------*/
+const vencedores = {
+  "Mais Engraçado": ["BERTOLA"],
+  "Mais Militante": ["TALYAH"],
+  "Melhor Jogador de Clash": ["LEONARDO"],
+  "Mais Sem Filtro": ["MURLO"],
+  "Mais Espontâneo": ["SARA"],
+  "Mais Estiloso": ["GUSTAVO"],
+  "Mais Criativo": ["FELIX"],
+  "Mais Resenha": ["BERTOLA"],
+  "Mais Dorminhoco": ["MARIA CLARA"],
+  "Mais Turista": ["ISABELA"],
+  "Dupla Dinâmica": ["BERTOLA E GUSTAVO"],
+  "Melhor Casal": ["LAURA E ARTHUR DA LAURA"],
+  "Mais Prestativo": ["LAURA"],
+  "Mais Comunicativo": ["YASMIN"],
+  "Melhor Multimídia": ["DAVI", "LETICIA"],
+  "Melhor Jogador Interclasse": ["CASTELANO"]
+};
+
+const dadosCategorias = [
+  { nome: "Mais Engraçado", pessoas: [
+    { nome: "BERTOLA", foto: "b.png" },
+    { nome: "MURLO", foto: "murlo.png" },
+    { nome: "VITOR", foto: "v.jpeg" }
+  ]},
+  { nome: "Mais Militante", pessoas: [
+    { nome: "FELIX", foto: "f.png" },
+    { nome: "TALYAH", foto: "t.png" },
+    { nome: "GIULIA", foto: "giu.png" }
+  ]},
+  { nome: "Melhor Jogador de Clash", pessoas: [
+    { nome: "GUSTAVO", foto: "gusta.png" },
+    { nome: "LEONARDO", foto: "leo.png" },
+    { nome: "BERTOLA", foto: "b.png" }
+  ]},
+  { nome: "Mais Sem Filtro", pessoas: [
+    { nome: "NICOLAS", foto: "n.png" },
+    { nome: "MÁRIO", foto: "m.png" },
+    { nome: "MURLO", foto: "murlo.png" }
+  ]},
+  { nome: "Mais Espontâneo", pessoas: [
+    { nome: "MURLO", foto: "murlo.png" },
+    { nome: "SOPHIA", foto: "so.png" },
+    { nome: "SARA", foto: "s.png" }
+  ]},
+  { nome: "Mais Estiloso", pessoas: [
+    { nome: "MARIA CLARA", foto: "mc.png" },
+    { nome: "SARA", foto: "s.png" },
+    { nome: "GUSTAVO", foto: "gusta.png" },
+  ]},
+  { nome: "Mais Criativo", pessoas: [
+    { nome: "FELIX", foto: "f.png" },
+    { nome: "LETICIA", foto: "l.png" },
+    { nome: "BEATRIZ SOUZA", foto: "bs.png" }
+  ]},
+  { nome: "Mais Resenha", pessoas: [
+    { nome: "MURLO", foto: "murlo.png" },
+    { nome: "BERTOLA", foto: "b.png" },
+    { nome: "GUSTAVO", foto: "gusta.png" }
+  ]},
+  { nome: "Mais Dorminhoco", pessoas: [
+    { nome: "PINA", foto: "p.png" },
+    { nome: "MARIA CLARAs", foto: "mc.png" },
+    { nome: "ISABELA", foto: "bela.png" }
+  ]},
+  { nome: "Mais Turista", pessoas: [
+    { nome: "BEATRIZ SOUZA", foto: "bs.png" },
+    { nome: "ISABELA", foto: "bela.png" },
+    { nome: "NICOLAS", foto: "n.png" }
+  ]},
+  { nome: "Dupla Dinâmica", pessoas: [
+    { nome: "LAURA E YASMIN", foto: "ley.png" },
+    { nome: "BERTOLA E GUSTAVO", foto: "geb.png" },
+    { nome: "FELIX E BEATRIZ SOUZA", foto: "feb.jpeg" }
+  ]},
+  { nome: "Melhor Casal", pessoas: [
+    { nome: "GABRIEL E LETICIA", foto: "gel.png" },
+    { nome: "LAURA E ARTHUR DA LAURA", foto: "ael.png" },
+    { nome: "BERTHUR E BEATRIZ SOUZA", foto: "aeb.png" }
+  ]},
+  { nome: "Mais Prestativo", pessoas: [
+    { nome: "LAURA", foto: "lau.png" },
+    { nome: "FELIX", foto: "f.png" },
+    { nome: "DAVI", foto: "d.png" }
+  ]},
+  { nome: "Mais Comunicativo", pessoas: [
+    { nome: "YASMIN", foto: "yas.png" },
+    { nome: "LAURA", foto: "lau.png" },
+    { nome: "SOPHIA", foto: "so.png" }
+  ]},
+  { nome: "Melhor Multimídia", pessoas: [
+    { nome: "LETICIA", foto: "l.png" },
+    { nome: "DAVI", foto: "d.png" },
+    { nome: "BEATRIZ MITIKO", foto: "mitiko.png" }
+  ]},
+  { nome: "Melhor Jogador Interclasse", pessoas: [
+    { nome: "CASTELANO", foto: "CAS.png" },
+    { nome: "MARIA CLARA", foto: "mc.png" },
+    { nome: "VITOR", foto: "v.jpeg" }
+  ]},
+];
+
+/* --------------------------
+  GERA HTML DAS CATEGORIAS
+---------------------------*/
+const container = document.getElementById('mainContainer');
+
+dadosCategorias.forEach(cat=>{
+  const bloco = document.createElement('div');
+  bloco.className = 'categoria';
+
+  // cria div do carousel com arrows
+  bloco.innerHTML = `
+    <h2>${cat.nome}</h2>
+    <div class="winner-box" id="wbox-${cat.nome.replace(/\s+/g,'-')}">Vencedor: A definir</div>
+
+    <div class="carousel" data-cat="${cat.nome}">
+      <button class="arrow left" aria-label="anterior">‹</button>
+      <div class="carousel-track">
+        ${cat.pessoas.map(p=>`
+          <div class="slide" data-nome="${p.nome}">
+            <img src="${p.foto}" alt="${p.nome}" />
+            <span>${p.nome}</span>
+          </div>
+        `).join('')}
+      </div>
+      <button class="arrow right" aria-label="próximo">›</button>
+    </div>
+  `;
+
+  container.appendChild(bloco);
+});
+
+/* --------------------------
+  CARROSSEL — setas + comportamento
+---------------------------*/
+document.querySelectorAll('.carousel').forEach(car => {
+  const track = car.querySelector('.carousel-track');
+  const slides = track.children;
+  const btnLeft = car.querySelector('.arrow.left');
+  const btnRight = car.querySelector('.arrow.right');
+
+  let index = 0;
+  function update(){ 
+    const w = slides[0].offsetWidth + 12; 
+    track.style.transform = `translateX(${-index * w}px)`; 
+  }
+
+  btnLeft.addEventListener('click', ()=>{ index = Math.max(0, index-1); update(); });
+  btnRight.addEventListener('click', ()=>{ index = Math.min(slides.length-1, index+1); update(); });
+
+  // touch drag for better UX (mobile)
+  let startX=0, currentX=0, isDown=false;
+  track.addEventListener('pointerdown', e => {
+    isDown=true; startX = e.clientX; track.style.transition='none';
+  });
+  window.addEventListener('pointerup', e=>{
+    if(!isDown) return;
+    isDown=false; track.style.transition='transform .45s ease';
+    const dx = currentX - startX;
+    if(dx < -40) index = Math.min(slides.length-1, index+1);
+    if(dx > 40) index = Math.max(0, index-1);
+    update();
+  });
+  track.addEventListener('pointermove', e=>{
+    if(!isDown) return;
+    currentX = e.clientX;
+    const dx = currentX - startX;
+    const w = slides[0].offsetWidth + 12;
+    track.style.transform = `translateX(${-index * w + dx}px)`;
+  });
+});
+
+/* --------------------------
+  AUTOMÁTICO MOBILE
+---------------------------*/
+let autoIntervals = [];
+function iniciarAuto(){
+  if(window.innerWidth > 768) return;
+  document.querySelectorAll('.carousel-track').forEach(track=>{
+    const slides = track.children;
+    let idx=0;
+    const it = setInterval(()=>{
+      idx = (idx+1) % slides.length;
+      const w = slides[0].offsetWidth + 12;
+      track.style.transform = `translateX(${-idx * w}px)`;
+    }, 3500);
+    autoIntervals.push(it);
+  });
+}
+window.addEventListener('load', iniciarAuto);
+
+/* --------------------------
+  VIDEO CONTROLES (slider + clicar para reiniciar + play/pause)
+---------------------------*/
+const video = document.getElementById('meuVideo');
+const slider = document.getElementById('videoSlider');
+const timeCur = document.getElementById('time-cur');
+const timeDur = document.getElementById('time-dur');
+const playBtn = document.getElementById('playPause');
+
+video.addEventListener('loadedmetadata', ()=>{
+  if(slider) slider.max = Math.floor(video.duration) || 0;
+  if(timeDur) timeDur.textContent = formatTime(video.duration || 0);
+});
+
+// atualiza slider enquanto o vídeo toca
+video.addEventListener('timeupdate', ()=>{
+  if(slider) slider.value = Math.floor(video.currentTime);
+  if(timeCur) timeCur.textContent = formatTime(video.currentTime);
+  if (playBtn) playBtn.textContent = video.paused ? '▶' : '❚❚';
+});
+
+// arrastar slider altera o tempo do vídeo
+if (slider) {
+  slider.addEventListener('input', ()=>{
+    video.currentTime = Number(slider.value);
+  });
+}
+
+// play/pause button
+if (playBtn) {
+  playBtn.addEventListener('click', ()=>{
+    if(video.paused){
+      video.play();
+      playBtn.textContent = '❚❚';
+    } else {
+      video.pause();
+      playBtn.textContent = '▶';
+    }
+  });
+}
+
+// permitir reiniciar do início ao clicar no vídeo (após liberado)
+video.addEventListener('click', ()=>{
+  if (video.style.pointerEvents !== 'none') {
+    video.currentTime = 0;
+    video.play();
+    if(playBtn) playBtn.textContent = '❚❚';
+  }
+});
+
+function formatTime(sec){
+  if(!isFinite(sec)) return '00:00';
+  const s = Math.floor(sec%60).toString().padStart(2,'0');
+  const m = Math.floor((sec/60)%60).toString().padStart(2,'0');
+  return `${m}:${s}`;
+}
+
+/* --------------------------
+  CONTAGEM REGRESSIVA E LIBERAÇÃO
+---------------------------*/
+const RELEASE_TIME = new Date("November 26, 2025 10:30:00 GMT-3").getTime();
+
+function atualizarContagem(){
+  const agora = Date.now();
+  const diff = RELEASE_TIME - agora;
+  if(diff <= 0){
+    document.getElementById('countdown').textContent = '🎉 Começou!';
+    liberarTudo();
+    return;
+  }
+  const dias = Math.floor(diff/(1000*60*60*24));
+  const horas = Math.floor((diff%(1000*60*60*24))/(1000*60*60));
+  const minutos = Math.floor((diff%(1000*60*60))/(1000*60));
+  const segundos = Math.floor((diff%(1000*60))/1000);
+  document.getElementById('countdown').textContent = `${dias}d ${horas}h ${minutos}m ${segundos}s`;
+}
+setInterval(atualizarContagem, 1000);
+
+/* --------------------------
+  GERENCIAR CONFETTI (para 5s) — CAINDO DO TOPO (cobre página toda)
+---------------------------*/
+const confettiCanvas = document.getElementById('confetti-canvas');
+const myConfetti = confetti.create(confettiCanvas, { resize: true, useWorker: true });
+let confettiInterval = null;
+
+function startConfettiFor(ms = 5000){
+if(window.confettiInterval) clearInterval(window.confettiInterval);
+window.confettiInterval = setInterval(()=>{
+myConfetti({
+particleCount: 50,
+spread: 120,
+startVelocity: 55,
+origin: { x: 0.5, y: 0 },
+gravity: 0.9,
+ticks: 220
+});
+}, 180);
+
+setTimeout(()=>{
+clearInterval(window.confettiInterval);
+window.confettiInterval = null;
+}, ms + 60);
+}
+
+/* --------------------------
+  REVELAR VENCEDORES
+---------------------------*/
+function liberarTudo(){
+  // desbloqueia vídeo
+  const lock = document.getElementById('video-lock');
+  if(lock) lock.style.display = 'none';
+  video.style.filter = 'none';
+  video.style.pointerEvents = 'auto';
+
+  // para cada categoria, revelar vencedor(es)
+  document.querySelectorAll('.categoria').forEach(catEl=>{
+    const catName = catEl.querySelector('h2').textContent.trim();
+    const wBox = catEl.querySelector('.winner-box');
+    const winners = vencedores[catName];
+    if(!winners) return;
+
+    // mostra texto vencedor com fade
+    wBox.textContent = winners.length === 1 ? `Vencedor: ${winners[0]}` : `Vencedores: ${winners.join(' e ')}`;
+    wBox.classList.add('show');
+
+    // encontra slides e aplica destaque/escurece
+    const slides = Array.from(catEl.querySelectorAll('.slide'));
+    slides.forEach(s=>{
+      const nome = s.dataset.nome.trim();
+      const match = winners.some(w => normalize(w) === normalize(nome));
+      if(match){
+        s.classList.add('winner');
+      } else {
+        s.classList.add('dimmed');
+      }
+    });
+
+    // dispara confete por 5s — origem top cobrindo toda largura
+    startConfettiFor(5000);
+  });
+}
+
+/* small normalizer to compare names (remove accents, case) */
+function normalize(str){
+  return (str || '').normalize?.('NFD').replace(/[\u0300-\u036f]/g,'').toLowerCase();
+}
+
+/* --------------------------
+  Função para revelar apenas categoria visível (opcional)
+---------------------------*/
+window.revelarCategoriaIndex = function(idx){
+  const catEl = document.querySelectorAll('.categoria')[idx];
+  if(!catEl) return;
+  const catName = catEl.querySelector('h2').textContent.trim();
+  const winners = vencedores[catName];
+  const wBox = catEl.querySelector('.winner-box');
+  if(winners){
+    wBox.textContent = winners.length === 1 ? `Vencedor: ${winners[0]}` : `Vencedores: ${winners.join(' e ')}`;
+    wBox.classList.add('show');
+    const slides = Array.from(catEl.querySelectorAll('.slide'));
+    slides.forEach(s=>{
+      const nome = s.dataset.nome.trim();
+      const match = winners.some(w => normalize(w) === normalize(nome));
+      if(match) s.classList.add('winner'); else s.classList.add('dimmed');
+    });
+    startConfettiFor(5000);
+  }
+};
+
+/* --------------------------
+  inicialização: quando a página carregar
+---------------------------*/
+window.addEventListener('load', ()=>{
+  // hookup slider after metadata loaded
+  video.addEventListener('loadedmetadata', ()=>{
+    if(slider) slider.max = Math.floor(video.duration) || 0;
+    const td = document.getElementById('time-dur');
+    if(td) td.textContent = formatTime(video.duration || 0);
+  });
+  if (video.readyState >= 1) {
+    if(slider) slider.max = Math.floor(video.duration) || 0;
+    const td = document.getElementById('time-dur');
+    if(td) td.textContent = formatTime(video.duration || 0);
+  }
+
+  // drag slider handler
+  if(slider){
+    slider.addEventListener('input', ()=>{
+      video.currentTime = Number(slider.value);
+    });
+  }
+
+  // accessibility for arrows
+  document.querySelectorAll('.arrow').forEach(a=>{
+    a.tabIndex = 0;
+    a.addEventListener('keydown', e=>{
+      if(e.key === 'Enter' || e.key === ' ') a.click();
+    });
+  });
+
+  // start mobile auto carousels if needed
+  iniciarAuto();
+
+  // build was already done on page (categories exist), ensure countdown shows immediately
+  atualizarContagem();
+});
+</script>
 </body>
 </html>
